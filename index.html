@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111413">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="site-192.png">
+<link rel="apple-touch-icon" href="site-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Desk Art">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Desk Art | Websites, applications and graphic design</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -195,6 +202,7 @@ body:not(.ready){overflow:hidden}
 .banner::after{right:-16%;bottom:-26%;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 65%);animation:aur 18s ease-in-out infinite alternate-reverse}
 @keyframes aur{to{transform:translate(18%,12%) scale(1.15)}}
 .btn,.chip,.tap{-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -310,7 +318,7 @@ body:not(.ready){overflow:hidden}
 <div class="page" id="p-graphics"></div>
 
 </main>
-<footer><div class="wrap"><span>© 2026 Desk Art. All rights reserved.</span><div class="ic-row" id="fIcons"></div></div></footer>
+<footer><div class="wrap"><span>© 2026 Desk Art. All rights reserved.</span><div class="ic-row" id="fIcons"></div><button class="btn soft" id="inst" hidden>Install app</button></div></footer>
 <div class="tabbar neu" id="tb" role="navigation" aria-label="Quick"></div>
 <a class="fab" href="https://wa.me/8801000000000" aria-label="Chat on WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
 
@@ -474,6 +482,13 @@ if(fbOK){Promise.all([import("https://www.gstatic.com/firebasejs/10.12.2/firebas
  var st=r[0].exists()?r[0].data():{},w=r[1].docs.map(function(d){return d.data()}).filter(function(x){return x.visible!==false});
  WORKS=w;applySite(st);try{localStorage.setItem('da_cache',JSON.stringify({w:w,s:st}))}catch(e){}refreshAll();
 }).catch(function(e){console.warn('Firebase unavailable',e)});}
+
+(function(){var b=document.getElementById('inst'),ip=null;
+ if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})});
+ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ip=e;b.hidden=false});
+ b.addEventListener('click',function(){if(!ip)return;ip.prompt();ip.userChoice.then(function(){ip=null;b.hidden=true})});
+ window.addEventListener('appinstalled',function(){b.hidden=true});
+})();
 window.addEventListener('hashchange',route);route();
 </script>
 </body>

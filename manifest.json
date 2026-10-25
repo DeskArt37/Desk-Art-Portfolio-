@@ -1,0 +1,42 @@
+{
+  "id": "desk-art",
+  "name": "Desk Art",
+  "short_name": "Desk Art",
+  "description": "Websites, applications and graphic design",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111413",
+  "theme_color": "#111413",
+  "icons": [
+    {
+      "src": "site-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "site-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "site-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Our Works",
+      "url": "./index.html#works"
+    },
+    {
+      "name": "Contact",
+      "url": "./index.html#contact"
+    }
+  ]
+}

@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#111413">
-<title>Desk Art Admin</title>
+<link rel="manifest" href="admin-manifest.json">
+<link rel="icon" href="admin-192.png">
+<link rel="apple-touch-icon" href="admin-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Desk Studio">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>DeskArt Studio</title>
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -59,14 +66,14 @@ small{color:var(--muted)}
 <body>
 <div class="wrap">
 <div id="login" class="login neu" hidden>
-  <h2>Desk Art Admin</h2><p><small>Sign in with your admin email.</small></p>
+  <h2>DeskArt Studio</h2><p><small>Sign in with your admin email.</small></p>
   <label for="em">Email</label><input id="em" type="email" autocomplete="username">
   <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
   <div class="err" id="err"></div>
   <button class="btn" id="go">Sign in</button>
 </div>
 <div id="app" hidden>
-  <header><strong>Desk Art Admin</strong><div class="row"><a class="btn soft sm" href="./" target="_blank" style="text-decoration:none">View site</a><button class="btn soft sm" data-a="out">Sign out</button></div></header>
+  <header><strong>DeskArt Studio</strong><div class="row"><a class="btn soft sm" href="./" target="_blank" style="text-decoration:none">View site</a><button class="btn soft sm" id="inst" hidden>Install app</button><button class="btn soft sm" data-a="out">Sign out</button></div></header>
   <div class="tabs" id="tabs"></div>
   <div id="view"></div>
 </div>
@@ -163,6 +170,13 @@ $('#go').addEventListener('click',async()=>{$('#err').textContent='';
   try{await signInWithEmailAndPassword(auth,$('#em').value.trim(),$('#pw').value);}catch(e){$('#err').textContent='Wrong email or password.';}});
 $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click();});
 onAuthStateChanged(auth,u=>{$('#login').hidden=!!u;$('#app').hidden=!u;if(u)run(load);});
+
+(function(){var b=document.getElementById('inst'),ip=null;
+ if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})});
+ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ip=e;b.hidden=false});
+ b.addEventListener('click',function(){if(!ip)return;ip.prompt();ip.userChoice.then(function(){ip=null;b.hidden=true})});
+ window.addEventListener('appinstalled',function(){b.hidden=true});
+})();
 </script>
 </body>
 </html>
