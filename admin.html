@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#111413">
 <title>Desk Art Admin</title>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#111413;--ink:#F5F8F6;--muted:#9BA7A0;--green:#8EC641;--on:#0B0F0D;--dk:#070909;--lt:#1C2220;--red:#FF7A7A;color-scheme:dark}
@@ -47,6 +48,12 @@ small{color:var(--muted)}
 #toast{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom));transform:translateX(-50%);padding:.7rem 1.2rem;border-radius:2rem;background:var(--green);color:var(--on);font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s}
 #toast.on{opacity:1}
 [hidden]{display:none!important}
+.btn,.tab{transition:transform .2s cubic-bezier(.2,.8,.2,1);-webkit-tap-highlight-color:transparent}.btn:active,.tab:active{transform:scale(.96)}
+#view>*{animation:in .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem;margin-bottom:1.4rem}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{padding:1.2rem}.stat b{display:block;font-family:Sora,sans-serif;font-size:1.9rem;color:var(--green)}.stat span{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -82,22 +89,24 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const auth=getAuth(initializeApp(firebaseConfig)),db=getFirestore(auth.app);
 const CATS=['Websites','Applications','Graphic Design'];
-let W=[],E=[],S={},tab='works',form=null,img='';
+let W=[],E=[],S={},tab='ov',form=null,img='',thumb='';
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
 async function run(fn){try{await fn();}catch(e){console.error(e);toast('Error: '+(e.code||e.message));}}
 async function load(){
-  const a=await getDocs(query(collection(db,'works'),orderBy('order')));W=a.docs.map(d=>({id:d.id,...d.data()}));
-  try{const b=await getDocs(query(collection(db,'enquiries'),orderBy('createdAt','desc')));E=b.docs.map(d=>({id:d.id,...d.data()}));}catch(e){E=[];}
-  const s=await getDoc(doc(db,'site','main'));S=s.exists()?s.data():{};render();
+  const [a,b,s]=await Promise.all([getDocs(query(collection(db,'works'),orderBy('order'))),getDocs(query(collection(db,'enquiries'),orderBy('createdAt','desc'))).catch(()=>null),getDoc(doc(db,'site','main'))]);
+  W=a.docs.map(d=>({id:d.id,...d.data()}));E=b?b.docs.map(d=>({id:d.id,...d.data()})):[];S=s.exists()?s.data():{};render();
 }
 function render(){
   const un=E.filter(e=>!e.read).length;
-  $('#tabs').innerHTML=[['works','Works'],['enq','Enquiries'+(un?' ('+un+')':'')],['set','Settings']].map(t=>`<button class="tab" data-t="${t[0]}" aria-pressed="${tab===t[0]}">${t[1]}</button>`).join('');
-  $('#view').innerHTML=tab==='works'?vWorks():tab==='enq'?vEnq():vSet();
+  $('#tabs').innerHTML=[['ov','Overview'],['works','Works'],['enq','Enquiries'+(un?' ('+un+')':'')],['set','Settings']].map(t=>`<button class="tab" data-t="${t[0]}" aria-pressed="${tab===t[0]}">${t[1]}</button>`).join('');
+  $('#view').innerHTML=tab==='ov'?vOv():tab==='works'?vWorks():tab==='enq'?vEnq():vSet();
 }
+function vOv(){const vis=W.filter(w=>w.visible!==false).length,un=E.filter(e=>!e.read).length;
+  return `<div class="bar"><h2>Overview</h2></div><div class="stats"><div class="stat neu"><b>${W.length}</b><span>Projects</span></div><div class="stat neu"><b>${vis}</b><span>Visible</span></div><div class="stat neu"><b>${un}</b><span>New enquiries</span></div><div class="stat neu"><b>${S.maintenance?'Off':'Live'}</b><span>Site status</span></div></div>
+  <div class="neu box"><h3>Quick actions</h3><div class="row"><button class="btn" data-t="works" data-go="new">Add project</button><button class="btn soft" data-t="enq">Enquiries</button><button class="btn soft" data-t="set">Settings</button></div></div>`;}
 function vWorks(){
   return `<div class="bar"><h2>Works</h2><button class="btn" data-a="new">Add project</button></div>`+(form?fWork(form):'')+
-  (W.length?W.map((w,i)=>`<div class="item neu"><div class="th">${w.img?`<img src="${esc(w.img)}" alt="">`:'No image'}</div>
+  (W.length?W.map((w,i)=>`<div class="item neu"><div class="th">${w.img?`<img src="${esc(w.thumb||w.img)}" alt="" decoding="async">`:'No image'}</div>
   <div class="meta"><strong>${esc(w.title)}</strong><small>${esc(w.type)}${w.visible===false?' (hidden)':''}</small></div>
   <div class="acts"><button class="btn soft sm" data-a="up" data-id="${w.id}" ${i?'':'disabled'} aria-label="Move up">▲</button><button class="btn soft sm" data-a="down" data-id="${w.id}" ${i<W.length-1?'':'disabled'} aria-label="Move down">▼</button>
   <button class="btn soft sm" data-a="vis" data-id="${w.id}">${w.visible===false?'Show':'Hide'}</button><button class="btn soft sm" data-a="edit" data-id="${w.id}">Edit</button><button class="btn red sm" data-a="del" data-id="${w.id}">Delete</button></div></div>`).join(''):'<p><small>No projects yet. Add your first one.</small></p>');
@@ -122,29 +131,31 @@ function vSet(){return `<div class="bar"><h2>Settings</h2></div><div class="neu 
  <label class="chk"><input type="checkbox" id="s-mt" ${S.maintenance?'checked':''}>Maintenance mode (visitors see a notice instead of the site)</label>
  <label for="s-mm">Maintenance message</label><input id="s-mm" value="${esc(S.maintMsg)}" placeholder="We are updating the site. Please check back soon.">
  <button class="btn" data-a="saveset">Save settings</button></div>`;}
-function pack(f){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.78));};im.src=r.result;};r.readAsDataURL(f);});}
-document.addEventListener('change',async e=>{if(e.target.id==='f-i'&&e.target.files[0]){img=await pack(e.target.files[0]);$('#f-p').innerHTML=`<img src="${img}" alt="">`;}});
+function scale(im,m,q){const k=Math.min(1,m/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q);}
+function pack(f){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>res({img:scale(im,800,.74),thumb:scale(im,360,.7)});im.src=r.result;};r.readAsDataURL(f);});}
+document.addEventListener('change',async e=>{if(e.target.id==='f-i'&&e.target.files[0]){const P=await pack(e.target.files[0]);img=P.img;thumb=P.thumb;$('#f-p').innerHTML=`<img src="${img}" alt="">`;}});
 const by=id=>W.find(w=>w.id===id)||E.find(e=>e.id===id);
 async function swap(id,d){const i=W.findIndex(w=>w.id===id),j=i+d;if(j<0||j>=W.length)return;const a=W[i],b=W[j];
-  const ao=a.order||i+1,bo=b.order||j+1;await updateDoc(doc(db,'works',a.id),{order:bo===ao?bo+d:bo});await updateDoc(doc(db,'works',b.id),{order:ao});}
+  const ao=a.order||i+1,bo=b.order||j+1,na=bo===ao?bo+d:bo;a.order=na;b.order=ao;W.sort((x,y)=>(x.order||0)-(y.order||0));render();
+  await Promise.all([updateDoc(doc(db,'works',a.id),{order:na}),updateDoc(doc(db,'works',b.id),{order:ao})]);}
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-t]');if(t){tab=t.dataset.t;form=null;render();return;}
+  const t=e.target.closest('[data-t]');if(t){tab=t.dataset.t;form=t.dataset.go==='new'?{visible:true}:null;if(form){img='';thumb='';}render();return;}
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
   run(async()=>{
     if(a==='out'){await signOut(auth);return;}
-    if(a==='new'){form={visible:true};img='';render();return;}
+    if(a==='new'){form={visible:true};img='';thumb='';render();return;}
     if(a==='cancel'){form=null;render();return;}
-    if(a==='edit'){form=by(id);img=form.img||'';render();window.scrollTo(0,0);return;}
+    if(a==='edit'){form=by(id);img=form.img||'';thumb=form.thumb||'';render();window.scrollTo(0,0);return;}
     if(a==='save'){const title=$('#f-t').value.trim();if(!title){toast('Add a title');return;}
-      const data={title,type:$('#f-c').value,desc:$('#f-d').value.trim(),img,visible:$('#f-v').checked};
+      const data={title,type:$('#f-c').value,desc:$('#f-d').value.trim(),img,thumb,visible:$('#f-v').checked};
       if(form.id)await updateDoc(doc(db,'works',form.id),data);
       else await addDoc(collection(db,'works'),{...data,order:Math.max(0,...W.map(w=>w.order||0))+1});
       form=null;toast('Saved');await load();return;}
-    if(a==='del'){if(!confirm('Delete this project?'))return;await deleteDoc(doc(db,'works',id));toast('Deleted');await load();return;}
-    if(a==='vis'){await updateDoc(doc(db,'works',id),{visible:by(id).visible===false});await load();return;}
-    if(a==='up'||a==='down'){await swap(id,a==='up'?-1:1);await load();return;}
-    if(a==='read'){await updateDoc(doc(db,'enquiries',id),{read:!by(id).read});await load();return;}
-    if(a==='delq'){if(!confirm('Delete this enquiry?'))return;await deleteDoc(doc(db,'enquiries',id));await load();return;}
+    if(a==='del'){if(!confirm('Delete this project?'))return;W=W.filter(w=>w.id!==id);render();toast('Deleted');await deleteDoc(doc(db,'works',id));return;}
+    if(a==='vis'){const w=by(id),v=w.visible===false;w.visible=v;render();await updateDoc(doc(db,'works',id),{visible:v});return;}
+    if(a==='up'||a==='down'){await swap(id,a==='up'?-1:1);return;}
+    if(a==='read'){const q=by(id);q.read=!q.read;render();await updateDoc(doc(db,'enquiries',id),{read:q.read});return;}
+    if(a==='delq'){if(!confirm('Delete this enquiry?'))return;E=E.filter(e=>e.id!==id);render();await deleteDoc(doc(db,'enquiries',id));return;}
     if(a==='saveset'){await setDoc(doc(db,'site','main'),{tagline:$('#s-tag').value.trim(),instagram:$('#s-ig').value.trim(),whatsapp:$('#s-wa').value.trim(),messenger:$('#s-ms').value.trim(),phone:$('#s-ph').value.trim(),maintenance:$('#s-mt').checked,maintMsg:$('#s-mm').value.trim()},{merge:true});toast('Settings saved');await load();return;}
   });
 });
