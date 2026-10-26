@@ -1,7 +1,7 @@
 {
   "id": "desk-art",
-  "name": "Desk Art",
-  "short_name": "Desk Art",
+  "name": "Desk Art Studio",
+  "short_name": "DA Studio",
   "description": "Websites, applications and graphic design",
   "start_url": "./index.html",
   "scope": "./",

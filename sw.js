@@ -1,4 +1,4 @@
-const V='da-v1';
+const V='da-v2';
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(V).then(c=>c.addAll(['./index.html','./admin.html']).catch(()=>{})))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>clients.claim()))});
 self.addEventListener('fetch',e=>{

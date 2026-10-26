@@ -10,9 +10,9 @@
 <link rel="apple-touch-icon" href="admin-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Desk Studio">
+<meta name="apple-mobile-web-app-title" content="DA Admin">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>DeskArt Studio</title>
+<title>Desk Art Studio</title>
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -61,19 +61,31 @@ small{color:var(--muted)}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem;margin-bottom:1.4rem}
 @media(min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat{padding:1.2rem}.stat b{display:block;font-family:Sora,sans-serif;font-size:1.9rem;color:var(--green)}.stat span{color:var(--muted)}
+
+:root{--dk:#000;--lt:#000}
+body{background:radial-gradient(90% 40% at 50% -8%,rgba(142,198,65,.13),transparent 70%) no-repeat,#0A0A0B}
+.neu{background:linear-gradient(180deg,#1F1F23,#131316);border:1px solid rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.7),0 16px 28px -14px rgba(0,0,0,.85)}
+.inset,input,select,textarea{background:#0B0B0D;border:1px solid rgba(255,255,255,.05);box-shadow:inset 0 2px 7px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,255,255,.05)}
+input[type=checkbox]{box-shadow:none}
+.btn{background:linear-gradient(180deg,#C4E58E,#8EC641 52%,#5E8A22);color:#0B0F08;text-shadow:0 1px 0 rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.6),0 8px 14px -8px #000}
+.btn.soft,.btn.red,.tab{background:linear-gradient(180deg,#323238,#1B1B1F);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(0,0,0,.4),0 0 0 1px rgba(0,0,0,.75),0 8px 14px -8px #000}
+.btn.red{color:var(--red)}
+.tab{color:var(--muted)}
+.tab[aria-pressed=true]{color:#8EC641;background:#0B0B0D;box-shadow:inset 0 2px 6px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,255,255,.06)}
+.th{background:#0B0B0D;box-shadow:inset 0 2px 6px rgba(0,0,0,.85)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div id="login" class="login neu" hidden>
-  <h2>DeskArt Studio</h2><p><small>Sign in with your admin email.</small></p>
+  <h2>Desk Art Studio</h2><p><small>Sign in with your admin email.</small></p>
   <label for="em">Email</label><input id="em" type="email" autocomplete="username">
   <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
   <div class="err" id="err"></div>
   <button class="btn" id="go">Sign in</button>
 </div>
 <div id="app" hidden>
-  <header><strong>DeskArt Studio</strong><div class="row"><a class="btn soft sm" href="./" target="_blank" style="text-decoration:none">View site</a><button class="btn soft sm" id="inst" hidden>Install app</button><button class="btn soft sm" data-a="out">Sign out</button></div></header>
+  <header><strong>Desk Art Studio</strong><div class="row"><a class="btn soft sm" href="./" target="_blank" style="text-decoration:none">View site</a><button class="btn soft sm" data-a="out">Sign out</button></div></header>
   <div class="tabs" id="tabs"></div>
   <div id="view"></div>
 </div>
@@ -114,7 +126,7 @@ function vOv(){const vis=W.filter(w=>w.visible!==false).length,un=E.filter(e=>!e
 function vWorks(){
   return `<div class="bar"><h2>Works</h2><button class="btn" data-a="new">Add project</button></div>`+(form?fWork(form):'')+
   (W.length?W.map((w,i)=>`<div class="item neu"><div class="th">${w.img?`<img src="${esc(w.thumb||w.img)}" alt="" decoding="async">`:'No image'}</div>
-  <div class="meta"><strong>${esc(w.title)}</strong><small>${esc(w.type)}${w.visible===false?' (hidden)':''}</small></div>
+  <div class="meta"><strong>${esc(w.title)}</strong><small>${esc(w.type)}${w.visible===false?' (hidden)':''}${w.live?' | live link added':''}</small></div>
   <div class="acts"><button class="btn soft sm" data-a="up" data-id="${w.id}" ${i?'':'disabled'} aria-label="Move up">▲</button><button class="btn soft sm" data-a="down" data-id="${w.id}" ${i<W.length-1?'':'disabled'} aria-label="Move down">▼</button>
   <button class="btn soft sm" data-a="vis" data-id="${w.id}">${w.visible===false?'Show':'Hide'}</button><button class="btn soft sm" data-a="edit" data-id="${w.id}">Edit</button><button class="btn red sm" data-a="del" data-id="${w.id}">Delete</button></div></div>`).join(''):'<p><small>No projects yet. Add your first one.</small></p>');
 }
@@ -122,6 +134,7 @@ function fWork(w){return `<div class="neu box"><h3>${w.id?'Edit':'New'} project<
  <label for="f-t">Title</label><input id="f-t" value="${esc(w.title)}">
  <label for="f-c">Category</label><select id="f-c">${CATS.map(c=>`<option ${w.type===c?'selected':''}>${c}</option>`).join('')}</select>
  <label for="f-d">One-line description</label><input id="f-d" value="${esc(w.desc)}">
+ <label for="f-l">Live view link (for websites and apps)</label><input id="f-l" value="${esc(w.live)}" inputmode="url" placeholder="https://example.com">
  <label for="f-i">Image</label><input id="f-i" type="file" accept="image/*"><div class="th" id="f-p">${img?`<img src="${img}" alt="">`:'No image'}</div>
  <label class="chk"><input type="checkbox" id="f-v" ${w.visible!==false?'checked':''}>Show on website</label>
  <div class="row"><button class="btn" data-a="save">Save</button><button class="btn soft" data-a="cancel">Cancel</button></div></div>`;}
@@ -139,6 +152,7 @@ function vSet(){return `<div class="bar"><h2>Settings</h2></div><div class="neu 
  <label for="s-mm">Maintenance message</label><input id="s-mm" value="${esc(S.maintMsg)}" placeholder="We are updating the site. Please check back soon.">
  <button class="btn" data-a="saveset">Save settings</button></div>`;}
 function scale(im,m,q){const k=Math.min(1,m/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q);}
+function normLive(v){v=v.trim();if(!v)return '';if(!/^https?:\/\//i.test(v))v='https://'+v;try{return new URL(v).href}catch(e){return ''}}
 function pack(f){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>res({img:scale(im,800,.74),thumb:scale(im,360,.7)});im.src=r.result;};r.readAsDataURL(f);});}
 document.addEventListener('change',async e=>{if(e.target.id==='f-i'&&e.target.files[0]){const P=await pack(e.target.files[0]);img=P.img;thumb=P.thumb;$('#f-p').innerHTML=`<img src="${img}" alt="">`;}});
 const by=id=>W.find(w=>w.id===id)||E.find(e=>e.id===id);
@@ -154,7 +168,7 @@ document.addEventListener('click',e=>{
     if(a==='cancel'){form=null;render();return;}
     if(a==='edit'){form=by(id);img=form.img||'';thumb=form.thumb||'';render();window.scrollTo(0,0);return;}
     if(a==='save'){const title=$('#f-t').value.trim();if(!title){toast('Add a title');return;}
-      const data={title,type:$('#f-c').value,desc:$('#f-d').value.trim(),img,thumb,visible:$('#f-v').checked};
+      const data={title,type:$('#f-c').value,desc:$('#f-d').value.trim(),live:normLive($('#f-l').value),img,thumb,visible:$('#f-v').checked};
       if(form.id)await updateDoc(doc(db,'works',form.id),data);
       else await addDoc(collection(db,'works'),{...data,order:Math.max(0,...W.map(w=>w.order||0))+1});
       form=null;toast('Saved');await load();return;}
@@ -171,12 +185,7 @@ $('#go').addEventListener('click',async()=>{$('#err').textContent='';
 $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click();});
 onAuthStateChanged(auth,u=>{$('#login').hidden=!!u;$('#app').hidden=!u;if(u)run(load);});
 
-(function(){var b=document.getElementById('inst'),ip=null;
- if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})});
- window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();ip=e;b.hidden=false});
- b.addEventListener('click',function(){if(!ip)return;ip.prompt();ip.userChoice.then(function(){ip=null;b.hidden=true})});
- window.addEventListener('appinstalled',function(){b.hidden=true});
-})();
+if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})});
 </script>
 </body>
 </html>

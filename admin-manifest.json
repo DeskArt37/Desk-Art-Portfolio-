@@ -1,7 +1,7 @@
 {
   "id": "desk-art-hq",
-  "name": "DeskArt Studio",
-  "short_name": "Desk Studio",
+  "name": "Desk Art Studio Admin",
+  "short_name": "DA Admin",
   "description": "Manage the Desk Art website",
   "start_url": "./admin.html",
   "scope": "./admin.html",
