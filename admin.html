@@ -63,16 +63,20 @@ small{color:var(--muted)}
 .stat{padding:1.2rem}.stat b{display:block;font-family:Sora,sans-serif;font-size:1.9rem;color:var(--green)}.stat span{color:var(--muted)}
 
 :root{--dk:#000;--lt:#000}
-body{background:radial-gradient(90% 40% at 50% -8%,rgba(142,198,65,.13),transparent 70%) no-repeat,#0A0A0B}
-.neu{background:linear-gradient(180deg,#1F1F23,#131316);border:1px solid rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.7),0 16px 28px -14px rgba(0,0,0,.85)}
-.inset,input,select,textarea{background:#0B0B0D;border:1px solid rgba(255,255,255,.05);box-shadow:inset 0 2px 7px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,255,255,.05)}
+body{background:radial-gradient(90% 40% at 50% -8%,rgba(142,198,65,.12),transparent 70%) no-repeat,#111113}
+.neu{background:linear-gradient(145deg,#1A1A1E,#131316);border:0;box-shadow:10px 10px 22px rgba(0,0,0,.7),-8px -8px 18px rgba(255,255,255,.04),inset 1px 1px 1px rgba(255,255,255,.06)}
+.inset,input,select,textarea{background:#0F0F11;border:0;box-shadow:inset 7px 7px 14px rgba(0,0,0,.75),inset -6px -6px 12px rgba(255,255,255,.035)}
 input[type=checkbox]{box-shadow:none}
-.btn{background:linear-gradient(180deg,#C4E58E,#8EC641 52%,#5E8A22);color:#0B0F08;text-shadow:0 1px 0 rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.6),0 8px 14px -8px #000}
-.btn.soft,.btn.red,.tab{background:linear-gradient(180deg,#323238,#1B1B1F);color:var(--ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(0,0,0,.4),0 0 0 1px rgba(0,0,0,.75),0 8px 14px -8px #000}
-.btn.red{color:var(--red)}
-.tab{color:var(--muted)}
-.tab[aria-pressed=true]{color:#8EC641;background:#0B0B0D;box-shadow:inset 0 2px 6px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,255,255,.06)}
-.th{background:#0B0B0D;box-shadow:inset 0 2px 6px rgba(0,0,0,.85)}
+.btn{background:linear-gradient(145deg,#C4E58E,#8EC641 45%,#5E8A22);color:#0B0F08;text-shadow:0 1px 0 rgba(255,255,255,.3);box-shadow:8px 8px 16px rgba(0,0,0,.65),-5px -5px 12px rgba(255,255,255,.045),inset 1px 1px 1px rgba(255,255,255,.55)}
+.btn:active{box-shadow:inset 5px 5px 10px rgba(0,0,0,.45),inset -4px -4px 8px rgba(255,255,255,.18)}
+.btn.soft,.btn.red,.tab{background:linear-gradient(145deg,#1C1C20,#131316);color:var(--ink);box-shadow:6px 6px 12px rgba(0,0,0,.6),-4px -4px 9px rgba(255,255,255,.04),inset 1px 1px 1px rgba(255,255,255,.06)}
+.btn.red{color:var(--red)}.tab{color:var(--muted);flex:none}
+.tabs{flex-wrap:nowrap;overflow-x:auto;padding:.4rem .3rem 1.1rem}
+.tab[aria-pressed=true]{color:#8EC641;background:#0F0F11;box-shadow:inset 5px 5px 10px rgba(0,0,0,.75),inset -4px -4px 8px rgba(255,255,255,.035)}
+.th{background:#0F0F11;box-shadow:inset 5px 5px 10px rgba(0,0,0,.75)}
+.msgs{height:min(50vh,24rem);overflow:auto;padding:.8rem;margin-bottom:1rem}
+.m{max-width:82%;width:fit-content;padding:.55rem .85rem;border-radius:1rem;margin:.45rem 0;word-break:break-word;white-space:pre-wrap}.m small{display:block;opacity:.6;font-size:.7rem}
+.m.u{margin-left:auto;color:#0B0F08;background:linear-gradient(145deg,#C4E58E,#5E8A22)}.m.a{background:#1C1C20;box-shadow:4px 4px 8px rgba(0,0,0,.5),-3px -3px 6px rgba(255,255,255,.035)}
 </style>
 </head>
 <body>
@@ -95,7 +99,7 @@ input[type=checkbox]{box-shadow:none}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,query,orderBy} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,query,orderBy,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyDh8F7ql6GxD7hmhGAbVlttX9CyZiJ7XH0",
   authDomain: "desk-art.firebaseapp.com",
@@ -109,20 +113,39 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const auth=getAuth(initializeApp(firebaseConfig)),db=getFirestore(auth.app);
 const CATS=['Websites','Applications','Graphic Design'];
 let W=[],E=[],S={},tab='ov',form=null,img='',thumb='';
+let U=[],C=[],R=[],A=[],selC=null,cmsgs=[],cUn=null,liveOn=false;
+const fd=t=>t&&t.toDate?t.toDate().toLocaleString([],{dateStyle:'medium',timeStyle:'short'}):'-';
+const ft=t=>t&&t.toDate?t.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+function ping(t,b){if(document.hidden&&window.Notification&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification(t,{body:b,icon:'admin-192.png',badge:'admin-192.png',tag:'msg',renotify:true})).catch(()=>{});else toast(t+': '+b);}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
 async function run(fn){try{await fn();}catch(e){console.error(e);toast('Error: '+(e.code||e.message));}}
 async function load(){
-  const [a,b,s]=await Promise.all([getDocs(query(collection(db,'works'),orderBy('order'))),getDocs(query(collection(db,'enquiries'),orderBy('createdAt','desc'))).catch(()=>null),getDoc(doc(db,'site','main'))]);
-  W=a.docs.map(d=>({id:d.id,...d.data()}));E=b?b.docs.map(d=>({id:d.id,...d.data()})):[];S=s.exists()?s.data():{};render();
+  const g=(n,o)=>getDocs(query(collection(db,n),orderBy(o,'desc'))).catch(()=>null),mp=d=>({id:d.id,...d.data({serverTimestamps:'estimate'})});
+  const [a,b,s,us,rv,an]=await Promise.all([getDocs(query(collection(db,'works'),orderBy('order'))),g('enquiries','createdAt'),getDoc(doc(db,'site','main')),g('users','createdAt'),g('reviews','createdAt'),g('announcements','createdAt')]);
+  W=a.docs.map(mp);E=b?b.docs.map(mp):[];S=s.exists()?s.data():{};U=us?us.docs.map(mp):[];R=rv?rv.docs.map(mp):[];A=an?an.docs.map(mp):[];render();
 }
-function render(){
-  const un=E.filter(e=>!e.read).length;
-  $('#tabs').innerHTML=[['ov','Overview'],['works','Works'],['enq','Enquiries'+(un?' ('+un+')':'')],['set','Settings']].map(t=>`<button class="tab" data-t="${t[0]}" aria-pressed="${tab===t[0]}">${t[1]}</button>`).join('');
-  $('#view').innerHTML=tab==='ov'?vOv():tab==='works'?vWorks():tab==='enq'?vEnq():vSet();
-}
+function startLive(){if(liveOn)return;liveOn=true;let first=true;
+  onSnapshot(query(collection(db,'chats'),orderBy('lastAt','desc')),s=>{
+    C=s.docs.map(d=>({id:d.id,...d.data({serverTimestamps:'estimate'})}));
+    if(!first)s.docChanges().forEach(ch=>{if(ch.type==='removed')return;const c=ch.doc.data({serverTimestamps:'estimate'});if(c.unreadAdmin&&!(tab==='msg'&&selC===ch.doc.id&&!document.hidden))ping(c.name||'New message',c.lastMsg||'');});
+    first=false;renderTabs();if(tab==='ov'||(tab==='msg'&&!selC))render();},()=>{});}
+function openC(id){if(cUn)cUn();selC=id;cmsgs=[];
+  cUn=onSnapshot(query(collection(db,'chats',id,'messages'),orderBy('createdAt')),s=>{cmsgs=s.docs.map(d=>d.data({serverTimestamps:'estimate'}));drawCm();},()=>{});
+  const c=C.find(x=>x.id===id);if(c&&c.unreadAdmin)updateDoc(doc(db,'chats',id),{unreadAdmin:false}).catch(()=>{});render();}
+function drawCm(){const el=$('#cm');if(!el)return;el.innerHTML=cmsgs.map(m=>`<div class="m ${m.from==='admin'?'u':'a'}">${esc(m.text)}<small>${ft(m.createdAt)}</small></div>`).join('')||'<small>No messages yet.</small>';el.scrollTop=el.scrollHeight;}
+function vMsg(){
+  if(selC){const c=C.find(x=>x.id===selC)||{};return `<div class="bar"><button class="btn soft sm" data-a="cback">Back</button><div class="meta" style="text-align:right"><strong>${esc(c.name||'User')}</strong><small>${esc(c.email||'')}</small></div></div><div class="neu box"><div class="msgs inset" id="cm"></div><div class="row"><input id="cTxt" placeholder="Write a reply" autocomplete="off" style="flex:1;margin:0"><button class="btn" data-a="csend">Send</button></div></div>`;}
+  return `<div class="bar"><h2>Messages</h2></div>`+(C.length?C.map(c=>`<div class="item neu tap" data-a="copen" data-id="${c.id}"><div class="meta">${c.unreadAdmin?'<span class="dot"></span>':''}<strong>${esc(c.name)}</strong> <small>${esc(c.email)}</small><p class="msg">${esc(c.lastMsg)}</p></div></div>`).join(''):'<p><small>No messages yet. When someone messages you, it appears here and you get an alert.</small></p>');}
+function vUsers(){return `<div class="bar"><h2>Users (${U.length})</h2></div>`+(U.length?U.map(u=>`<div class="item neu"><div class="meta"><strong>${esc(u.name||'No name')}</strong><small>${esc(u.email)}${u.phone?' | '+esc(u.phone):''}</small><small>Joined ${fd(u.createdAt)} | Last login ${fd(u.lastLogin)}</small></div></div>`).join(''):'<p><small>No users yet. People who sign up on the site appear here.</small></p>');}
+function vRev(){const avg=R.length?(R.reduce((x,r)=>x+r.rating,0)/R.length).toFixed(1):'-';return `<div class="bar"><h2>Reviews (${R.length})</h2><small>Average ${avg}</small></div>`+(R.length?R.map(r=>`<div class="item neu"><div class="meta"><strong>${'\u2605'.repeat(r.rating)}</strong> <small>${esc(r.name)} | ${fd(r.createdAt)}</small><p class="msg">${esc(r.text)}</p></div><div class="acts"><button class="btn red sm" data-a="delrev" data-id="${r.id}">Delete</button></div></div>`).join(''):'<p><small>No reviews yet.</small></p>');}
+function vUpd(){return `<div class="bar"><h2>Updates</h2></div><div class="neu box"><h3>Send an update</h3><small>Visitors see it in their bell and get a notification.</small><label for="u-t" style="margin-top:.8rem">Title</label><input id="u-t"><label for="u-b">Message</label><input id="u-b"><button class="btn" data-a="sendann">Send update</button></div>`+A.map(x=>`<div class="item neu"><div class="meta"><strong>${esc(x.title)}</strong><small>${fd(x.createdAt)}</small><p class="msg">${esc(x.body)}</p></div><div class="acts"><button class="btn red sm" data-a="delann" data-id="${x.id}">Delete</button></div></div>`).join('');}
+
+function renderTabs(){const un=E.filter(e=>!e.read).length,um=C.filter(c=>c.unreadAdmin).length;
+  $('#tabs').innerHTML=[['ov','Overview'],['msg','Messages'+(um?' ('+um+')':'')],['users','Users'],['rev','Reviews'],['works','Works'],['upd','Updates'],['enq','Enquiries'+(un?' ('+un+')':'')],['set','Settings']].map(t=>`<button class="tab" data-t="${t[0]}" aria-pressed="${tab===t[0]}">${t[1]}</button>`).join('');}
+function render(){renderTabs();$('#view').innerHTML=(({ov:vOv,msg:vMsg,users:vUsers,rev:vRev,works:vWorks,upd:vUpd,enq:vEnq,set:vSet})[tab]||vOv)();if(tab==='msg'&&selC)drawCm();}
 function vOv(){const vis=W.filter(w=>w.visible!==false).length,un=E.filter(e=>!e.read).length;
-  return `<div class="bar"><h2>Overview</h2></div><div class="stats"><div class="stat neu"><b>${W.length}</b><span>Projects</span></div><div class="stat neu"><b>${vis}</b><span>Visible</span></div><div class="stat neu"><b>${un}</b><span>New enquiries</span></div><div class="stat neu"><b>${S.maintenance?'Off':'Live'}</b><span>Site status</span></div></div>
-  <div class="neu box"><h3>Quick actions</h3><div class="row"><button class="btn" data-t="works" data-go="new">Add project</button><button class="btn soft" data-t="enq">Enquiries</button><button class="btn soft" data-t="set">Settings</button></div></div>`;}
+  return `<div class="bar"><h2>Overview</h2></div><div class="stats"><div class="stat neu"><b>${W.length}</b><span>Projects</span></div><div class="stat neu"><b>${vis}</b><span>Visible</span></div><div class="stat neu"><b>${C.filter(c=>c.unreadAdmin).length}</b><span>Unread messages</span></div><div class="stat neu"><b>${U.length}</b><span>Users</span></div><div class="stat neu"><b>${R.length}</b><span>Reviews</span></div><div class="stat neu"><b>${S.maintenance?'Off':'Live'}</b><span>Site status</span></div></div>
+  <div class="neu box"><h3>Quick actions</h3><div class="row"><button class="btn" data-t="works" data-go="new">Add project</button><button class="btn soft" data-t="msg">Messages</button><button class="btn soft" data-a="nt">Enable alerts</button><button class="btn soft" data-t="set">Settings</button></div></div>`;}
 function vWorks(){
   return `<div class="bar"><h2>Works</h2><button class="btn" data-a="new">Add project</button></div>`+(form?fWork(form):'')+
   (W.length?W.map((w,i)=>`<div class="item neu"><div class="th">${w.img?`<img src="${esc(w.thumb||w.img)}" alt="" decoding="async">`:'No image'}</div>
@@ -136,6 +159,7 @@ function fWork(w){return `<div class="neu box"><h3>${w.id?'Edit':'New'} project<
  <label for="f-d">One-line description</label><input id="f-d" value="${esc(w.desc)}">
  <label for="f-l">Live view link (for websites and apps)</label><input id="f-l" value="${esc(w.live)}" inputmode="url" placeholder="https://example.com">
  <label for="f-i">Image</label><input id="f-i" type="file" accept="image/*"><div class="th" id="f-p">${img?`<img src="${img}" alt="">`:'No image'}</div>
+ ${w.id?'':'<label class="chk"><input type="checkbox" id="f-n" checked>Notify visitors about this project</label>'}
  <label class="chk"><input type="checkbox" id="f-v" ${w.visible!==false?'checked':''}>Show on website</label>
  <div class="row"><button class="btn" data-a="save">Save</button><button class="btn soft" data-a="cancel">Cancel</button></div></div>`;}
 function vEnq(){
@@ -159,18 +183,26 @@ const by=id=>W.find(w=>w.id===id)||E.find(e=>e.id===id);
 async function swap(id,d){const i=W.findIndex(w=>w.id===id),j=i+d;if(j<0||j>=W.length)return;const a=W[i],b=W[j];
   const ao=a.order||i+1,bo=b.order||j+1,na=bo===ao?bo+d:bo;a.order=na;b.order=ao;W.sort((x,y)=>(x.order||0)-(y.order||0));render();
   await Promise.all([updateDoc(doc(db,'works',a.id),{order:na}),updateDoc(doc(db,'works',b.id),{order:ao})]);}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='cTxt'){const b=document.querySelector('[data-a=csend]');if(b)b.click();}});
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-t]');if(t){tab=t.dataset.t;form=t.dataset.go==='new'?{visible:true}:null;if(form){img='';thumb='';}render();return;}
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
   run(async()=>{
     if(a==='out'){await signOut(auth);return;}
+    if(a==='copen'){openC(id);return;}
+    if(a==='cback'){if(cUn){cUn();cUn=null}selC=null;render();return;}
+    if(a==='csend'){const i=$('#cTxt'),v=i.value.trim();if(!v||!selC)return;i.value='';await addDoc(collection(db,'chats',selC,'messages'),{from:'admin',text:v.slice(0,1900),createdAt:serverTimestamp()});await setDoc(doc(db,'chats',selC),{lastMsg:'You: '+v.slice(0,70),lastAt:serverTimestamp(),unreadAdmin:false},{merge:true});return;}
+    if(a==='delrev'){if(!confirm('Delete this review?'))return;R=R.filter(r=>r.id!==id);render();await deleteDoc(doc(db,'reviews',id));return;}
+    if(a==='sendann'){const t=$('#u-t').value.trim(),b=$('#u-b').value.trim();if(!t){toast('Add a title');return;}await addDoc(collection(db,'announcements'),{title:t.slice(0,80),body:b.slice(0,300),createdAt:serverTimestamp()});toast('Update sent');await load();return;}
+    if(a==='delann'){A=A.filter(x=>x.id!==id);render();await deleteDoc(doc(db,'announcements',id));return;}
+    if(a==='nt'){if(window.Notification){const p=await Notification.requestPermission();toast(p==='granted'?'Alerts on':'Alerts blocked');}return;}
     if(a==='new'){form={visible:true};img='';thumb='';render();return;}
     if(a==='cancel'){form=null;render();return;}
     if(a==='edit'){form=by(id);img=form.img||'';thumb=form.thumb||'';render();window.scrollTo(0,0);return;}
     if(a==='save'){const title=$('#f-t').value.trim();if(!title){toast('Add a title');return;}
       const data={title,type:$('#f-c').value,desc:$('#f-d').value.trim(),live:normLive($('#f-l').value),img,thumb,visible:$('#f-v').checked};
       if(form.id)await updateDoc(doc(db,'works',form.id),data);
-      else await addDoc(collection(db,'works'),{...data,order:Math.max(0,...W.map(w=>w.order||0))+1});
+      else{await addDoc(collection(db,'works'),{...data,order:Math.max(0,...W.map(w=>w.order||0))+1});if($('#f-n')&&$('#f-n').checked)await addDoc(collection(db,'announcements'),{title:'New project: '+title,body:data.desc||'Take a look at our latest work.',createdAt:serverTimestamp()});}
       form=null;toast('Saved');await load();return;}
     if(a==='del'){if(!confirm('Delete this project?'))return;W=W.filter(w=>w.id!==id);render();toast('Deleted');await deleteDoc(doc(db,'works',id));return;}
     if(a==='vis'){const w=by(id),v=w.visible===false;w.visible=v;render();await updateDoc(doc(db,'works',id),{visible:v});return;}
@@ -183,7 +215,7 @@ document.addEventListener('click',e=>{
 $('#go').addEventListener('click',async()=>{$('#err').textContent='';
   try{await signInWithEmailAndPassword(auth,$('#em').value.trim(),$('#pw').value);}catch(e){$('#err').textContent='Wrong email or password.';}});
 $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click();});
-onAuthStateChanged(auth,u=>{$('#login').hidden=!!u;$('#app').hidden=!u;if(u)run(load);});
+onAuthStateChanged(auth,u=>{$('#login').hidden=!!u;$('#app').hidden=!u;if(u)run(async()=>{await load();startLive();});});
 
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})});
 </script>

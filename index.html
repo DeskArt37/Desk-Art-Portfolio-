@@ -24,9 +24,9 @@ body[data-pg="works"]{--ac:#D9B96C;--ac-hi:#F2E0AC;--ac-lo:#A8863A}
 body[data-pg="contact"]{--ac:#B8A9F0;--ac-hi:#E0D8FB;--ac-lo:#7F6FC4}
 body[data-pg="applications"]{--ac:#A6DCC0;--ac-hi:#D4F1E3;--ac-lo:#5FA583}
 body[data-pg="graphics"]{--ac:#E6AE9A;--ac-hi:#F6D6CA;--ac-lo:#B9735C}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);overflow-x:clip;max-width:100%}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased;background:var(--bg);background:radial-gradient(90% 46% at 50% -6%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 72%) no-repeat,var(--bg)}
+body{margin:0;max-width:100%;overflow-x:clip;color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased;background:var(--bg);background:radial-gradient(90% 46% at 50% -6%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 72%) no-repeat,var(--bg)}
 body:not(.ready){overflow:hidden}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
 a{color:inherit}
@@ -93,8 +93,8 @@ section{padding:3rem 0;content-visibility:auto;contain-intrinsic-size:auto 500px
 .bn .row{animation:rise .9s 1.25s both}
 @keyframes rise{from{opacity:0;transform:translateY(70%)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:scale(.3) rotate(-25deg)}to{opacity:1;transform:none}}
-.sc{position:relative}
-.stage{position:relative;perspective:1000px;height:min(88vw,28rem)}
+.sc{position:relative;overflow:hidden;margin-top:1.2rem;padding:1.5rem 0 .5rem;contain:paint}
+.stage{position:relative;perspective:1200px;height:min(86vw,27rem)}
 .rig{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(14deg) rotateY(-20deg);will-change:transform}
 .lyr{position:absolute;transform:translateZ(var(--z,0px));transform-style:preserve-3d}
 .fl{animation:flt 6s ease-in-out infinite;animation-delay:var(--d,0s)}
@@ -208,9 +208,63 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
 .i-bar b{display:block;height:100%;background:linear-gradient(180deg,var(--ac-hi),var(--ac-lo));transform-origin:left;animation:load 2s .3s cubic-bezier(.6,0,.2,1) both}
 @keyframes load{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .skip{position:absolute;right:1.2rem;top:calc(1.2rem + env(safe-area-inset-top,0px));z-index:3;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;padding:.5rem 1rem;border-radius:2rem;cursor:pointer}
+@media(max-width:1000px){.fab{bottom:calc(5.9rem + env(safe-area-inset-bottom,0px))}}
 #maint{position:fixed;inset:0;z-index:200;display:grid;place-items:center;text-align:center;padding:2rem;background:var(--bg)}
 #maint img{width:5rem;margin:0 auto 1.2rem;display:block}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* advanced neumorphism */
+html,body{background-color:#111113}
+.neu{background:linear-gradient(145deg,#1A1A1E,#131316);border:0;box-shadow:10px 10px 22px rgba(0,0,0,.7),-8px -8px 18px rgba(255,255,255,.04),inset 1px 1px 1px rgba(255,255,255,.06),inset -1px -1px 1px rgba(0,0,0,.4)}
+.inset{background:#0F0F11;border:0;box-shadow:inset 7px 7px 14px rgba(0,0,0,.75),inset -6px -6px 12px rgba(255,255,255,.035)}
+.tap:hover{box-shadow:10px 10px 22px rgba(0,0,0,.7),-8px -8px 18px rgba(255,255,255,.04),inset 0 0 0 1px color-mix(in srgb,var(--ac) 32%,transparent)}
+.btn{background:linear-gradient(145deg,var(--ac-hi),var(--ac) 45%,var(--ac-lo));text-shadow:0 1px 0 rgba(255,255,255,.3);box-shadow:8px 8px 16px rgba(0,0,0,.65),-5px -5px 12px rgba(255,255,255,.045),inset 1px 1px 1px rgba(255,255,255,.55),inset -1px -1px 2px rgba(0,0,0,.25)}
+.btn:active{box-shadow:inset 5px 5px 10px rgba(0,0,0,.45),inset -4px -4px 8px rgba(255,255,255,.18)}
+.btn.soft{background:linear-gradient(145deg,#1C1C20,#131316);box-shadow:8px 8px 16px rgba(0,0,0,.65),-5px -5px 12px rgba(255,255,255,.04),inset 1px 1px 1px rgba(255,255,255,.07)}
+.btn.soft:active{box-shadow:inset 5px 5px 10px rgba(0,0,0,.7),inset -4px -4px 8px rgba(255,255,255,.04)}
+.chip,.seg button{border:0;background:linear-gradient(145deg,#1C1C20,#131316);box-shadow:6px 6px 12px rgba(0,0,0,.6),-4px -4px 9px rgba(255,255,255,.04)}
+.chip[aria-pressed="true"],.seg button[aria-pressed="true"]{background:#0F0F11;box-shadow:inset 5px 5px 10px rgba(0,0,0,.75),inset -4px -4px 8px rgba(255,255,255,.035)}
+nav a[aria-current="page"],.tabbar a[aria-current="page"]{background:#0F0F11;box-shadow:inset 5px 5px 10px rgba(0,0,0,.75),inset -4px -4px 8px rgba(255,255,255,.035)}
+header{background:rgba(17,17,19,.97);border-bottom:0;box-shadow:0 12px 26px -14px #000}
+.tabbar{background:linear-gradient(145deg,#1A1A1E,#131316)!important;box-shadow:10px 10px 22px rgba(0,0,0,.7),-6px -6px 14px rgba(255,255,255,.035),inset 1px 1px 1px rgba(255,255,255,.06)!important}
+input,select,textarea{background:#0F0F11;border:0;box-shadow:inset 6px 6px 12px rgba(0,0,0,.75),inset -5px -5px 10px rgba(255,255,255,.035)}
+.cta{background:linear-gradient(145deg,#EEEBE4,#DAD6CC);border:0;box-shadow:12px 12px 24px rgba(0,0,0,.65),-8px -8px 18px rgba(255,255,255,.07),inset 1px 1px 1px #fff,inset -1px -1px 2px rgba(0,0,0,.1)}
+.cta .ib{background:linear-gradient(145deg,#F3F0EA,#DDD9CF);box-shadow:5px 5px 10px rgba(0,0,0,.28),-4px -4px 8px rgba(255,255,255,.8)}
+.cta .ico{background:#D7D3C9;box-shadow:inset 3px 3px 6px rgba(0,0,0,.25),inset -3px -3px 6px rgba(255,255,255,.7)}
+.fab{border:0;cursor:pointer;background:linear-gradient(145deg,var(--ac-hi),var(--ac) 45%,var(--ac-lo));box-shadow:8px 8px 16px rgba(0,0,0,.65),-4px -4px 10px rgba(255,255,255,.05),inset 1px 1px 1px rgba(255,255,255,.55)}
+.live{box-shadow:6px 6px 12px rgba(0,0,0,.6),-3px -3px 8px rgba(255,255,255,.04),inset 1px 1px 1px rgba(255,255,255,.55)}
+/* account, sheets, chat, reviews */
+.logo span{display:block;line-height:1}.logo small{display:block;font-size:.6rem;letter-spacing:.42em;text-transform:uppercase;color:var(--ac);margin-top:.2rem;font-weight:500}
+header .wrap{gap:.55rem}
+.ib2{width:2.6rem;height:2.6rem;border-radius:.9rem;border:0;color:var(--ink);cursor:pointer;display:grid;place-items:center;position:relative;padding:0}
+.bdg{position:absolute;top:-.35rem;right:-.35rem;min-width:1.15rem;height:1.15rem;padding:0 .3rem;border-radius:1rem;background:var(--ac);color:var(--on-ac);font-size:.7rem;font-weight:700;display:grid;place-items:center;font-style:normal}
+.acct{padding:.55rem 1rem;font-size:.9rem;border-radius:.9rem;white-space:nowrap}
+.acct.av{width:2.6rem;height:2.6rem;padding:0;border-radius:50%;color:var(--ac);font-weight:700}
+.acct .l2{display:none}@media(min-width:520px){.acct .l2{display:inline}}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:60}
+.sheet{position:fixed;left:50%;bottom:0;width:min(34rem,100%);max-height:90vh;overflow:auto;z-index:61;padding:1.6rem 1.4rem calc(1.6rem + env(safe-area-inset-bottom,0px));border-radius:1.8rem 1.8rem 0 0;transform:translateX(-50%);animation:up .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translate(-50%,40px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.x{position:absolute;right:1rem;top:1rem;width:2.4rem;height:2.4rem;border:0;border-radius:50%;color:var(--ink);font-size:1.4rem;cursor:pointer;padding:0}
+.seg{display:flex;gap:.8rem;margin:0 2.8rem 1.3rem 0}.seg button{flex:1;padding:.6rem;border-radius:.9rem;color:var(--muted);font:inherit;font-weight:600;cursor:pointer}.seg button[aria-pressed="true"]{color:var(--ac)}
+.err{color:#FF9C92;min-height:1.3rem;margin:0 0 .6rem;font-size:.95rem}
+.lnk{background:none;border:0;color:var(--ac);font:inherit;font-weight:600;cursor:pointer;margin-left:1rem}
+.sm,.note{color:var(--muted);font-size:.95rem;margin:0 0 1rem}.col{display:grid;gap:.9rem}
+.msgs{height:min(48vh,24rem);overflow:auto;padding:.8rem;margin-bottom:1rem}
+.m{max-width:82%;width:fit-content;padding:.55rem .85rem;border-radius:1rem;margin:.45rem 0;word-break:break-word;white-space:pre-wrap}.m small{display:block;opacity:.6;font-size:.7rem;margin-top:.15rem}
+.m.u{margin-left:auto;color:var(--on-ac);background:linear-gradient(145deg,var(--ac-hi),var(--ac-lo))}
+.m.a{background:#1C1C20;box-shadow:4px 4px 8px rgba(0,0,0,.5),-3px -3px 6px rgba(255,255,255,.035)}
+.cin{display:flex;gap:.8rem;align-items:flex-start}.cin input{margin:0;flex:1}
+.toastW{position:fixed;left:.9rem;right:.9rem;top:calc(.8rem + env(safe-area-inset-top,0px));z-index:90;display:grid;gap:.6rem;pointer-events:none}
+.toast{pointer-events:auto;padding:.8rem 1rem;display:grid;cursor:pointer;animation:tin .4s cubic-bezier(.2,.8,.2,1);transition:opacity .4s,transform .4s}
+.toast.gone{opacity:0;transform:translateY(-10px)}.toast span{color:var(--muted);font-size:.92rem}
+@keyframes tin{from{opacity:0;transform:translateY(-14px)}}
+.rev-top{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;margin-bottom:1.4rem;flex-wrap:wrap}.big{font-family:var(--display);font-size:2rem;color:var(--ac)}
+.stars{color:#34343A;letter-spacing:.1em}.stars i{font-style:normal}.stars i.on{color:var(--ac)}
+.revs{display:grid;gap:1.3rem;margin-bottom:1.6rem}@media(min-width:760px){.revs{grid-template-columns:repeat(3,1fr)}}
+.rv{padding:1.2rem}.rv p{margin:.5rem 0}.rv small{color:var(--muted)}
+.rvs{display:flex;gap:.3rem;margin:.6rem 0 1rem}.rvs button{font-size:1.9rem;border:0;background:none;color:#34343A;cursor:pointer;padding:0 .15rem}.rvs button.on{color:var(--ac)}
+.an{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.06)}.an p{margin:.2rem 0;color:var(--muted)}.an small{color:var(--muted);opacity:.7}
+.btn:disabled{opacity:.6}
 </style>
 </head>
 <body data-pg="home">
@@ -219,8 +273,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
 <div class="i-core"><img class="i-logo lg" alt="Desk Art Studio logo" width="100" height="105"><div class="i-name" id="iName" aria-label="Desk Art"></div><p class="i-studio">Studio</p><div class="i-bar inset"><b></b></div></div>
 <button class="skip" id="skip">Skip</button></div>
 <header><div class="wrap">
-  <a class="logo" href="#home"><img class="lg" alt="" width="28" height="29">Desk Art Studio</a>
-  <button class="btn inst" id="inst" hidden>Install app</button>
+  <a class="logo" href="#home"><img class="lg" alt="" width="28" height="29"><span>Desk Art<small>Studio</small></span></a>
+  <button class="ib2 neu tap" id="bell" aria-label="Updates"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><b class="bdg" id="bellN" hidden></b></button>
+  <button class="btn soft acct" id="acct"><span class="l">Login</span><span class="l2"> / Sign up</span></button>
   <button class="menu-btn neu tap" id="mb" aria-label="Open menu" aria-expanded="false">☰</button>
   <nav id="nav" aria-label="Main">
     <a href="#home" data-p="home">Desk Art Studio</a>
@@ -243,16 +298,16 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
       <div class="bn-name" id="bnName" aria-label="Desk Art"></div>
       <p class="bn-st">Studio</p>
       <p class="bn-p">Websites, applications and graphics that win you clients.</p>
-      <div class="row"><a class="btn" href="#contact">Start a project</a><a class="btn soft" href="#works">See our works</a></div>
+      <div class="row"><a class="btn" href="#contact">Start a project</a><a class="btn soft" href="#works">See our works</a><button class="btn soft" id="inst" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:.45rem" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>Install app</button></div>
     </div>
     <div class="sc"><div class="floor"></div><div class="stage" aria-hidden="true"><div class="rig" id="rig">
       <div class="orbit"><i></i></div>
-      <div class="lyr br" style="--z:40px"><div class="fl"><div class="br-top"><i></i><i></i><i></i><b></b></div><div class="br-body"><div class="hb"></div><div class="sk"></div><div class="sk" style="width:70%"></div><div class="sk" style="width:45%"></div></div></div></div>
-      <div class="lyr gd" style="--z:90px"><div class="fl" style="--d:-2s"><svg viewBox="0 0 200 70"><path class="pen" pathLength="260" d="M8 55 C40 5 70 5 100 35 S160 65 192 15"/><circle cx="8" cy="55" r="3.5" fill="#5E8A22"/><circle cx="192" cy="15" r="3.5" fill="#5E8A22"/></svg><div class="swt"><i style="background:#8EC641"></i><i style="background:#D9B96C"></i><i style="background:#9EC5E8"></i><i style="background:#B8A9F0"></i><i style="background:#E6AE9A"></i></div></div></div>
-      <div class="lyr ph" style="--z:150px"><div class="fl" style="--d:-1s"><div class="ph-s"><div class="rg"></div><div class="sk"></div><div class="sk" style="width:70%"></div><div class="sk"></div></div></div></div>
-      <div class="lyr" style="--z:190px;top:4%;right:34%"><div class="fl cp neu" style="--d:-3s">&lt;/&gt;</div></div>
-      <div class="lyr" style="--z:120px;bottom:14%;right:3%"><div class="fl cp neu" style="--d:-4s">Aa</div></div>
-      <div class="lyr" style="--z:70px;top:40%;left:0"><div class="fl cp neu" style="--d:-1.5s">{ }</div></div>
+      <div class="lyr br" style="--z:15px"><div class="fl"><div class="br-top"><i></i><i></i><i></i><b></b></div><div class="br-body"><div class="hb"></div><div class="sk"></div><div class="sk" style="width:70%"></div><div class="sk" style="width:45%"></div></div></div></div>
+      <div class="lyr gd" style="--z:45px"><div class="fl" style="--d:-2s"><svg viewBox="0 0 200 70"><path class="pen" pathLength="260" d="M8 55 C40 5 70 5 100 35 S160 65 192 15"/><circle cx="8" cy="55" r="3.5" fill="#5E8A22"/><circle cx="192" cy="15" r="3.5" fill="#5E8A22"/></svg><div class="swt"><i style="background:#8EC641"></i><i style="background:#D9B96C"></i><i style="background:#9EC5E8"></i><i style="background:#B8A9F0"></i><i style="background:#E6AE9A"></i></div></div></div>
+      <div class="lyr ph" style="--z:80px"><div class="fl" style="--d:-1s"><div class="ph-s"><div class="rg"></div><div class="sk"></div><div class="sk" style="width:70%"></div><div class="sk"></div></div></div></div>
+      <div class="lyr" style="--z:100px;top:4%;right:34%"><div class="fl cp neu" style="--d:-3s">&lt;/&gt;</div></div>
+      <div class="lyr" style="--z:60px;bottom:14%;right:3%"><div class="fl cp neu" style="--d:-4s">Aa</div></div>
+      <div class="lyr" style="--z:35px;top:40%;left:0"><div class="fl cp neu" style="--d:-1.5s">{ }</div></div>
     </div></div></div>
   </div>
   
@@ -285,6 +340,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
     <div class="works" id="homeWorks"></div>
     <a class="go" href="#works">View all works</a>
   </section>
+
+  <section id="reviewsSec"><h2>Reviews</h2><p class="sub">What clients say about Desk Art Studio.</p><div class="rev-top neu" id="revTop"></div><div class="revs" id="revList"></div><button class="btn" id="revBtn">Write a review</button></section>
 
   <div class="cta neu" id="homeCta"></div>
 </div>
@@ -322,11 +379,11 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
   <div class="cgrid">
     <div class="ctiles" id="ctiles"></div>
     <div class="neu box">
-      <label for="n">Your name</label><input id="n" autocomplete="name">
+      <p class="note" id="cNote"></p>
       <label for="s">Category</label>
       <select id="s"><option>Websites</option><option>Applications</option><option>Graphic Design</option><option>Not sure yet</option></select>
       <label for="m">About your project</label><textarea id="m"></textarea>
-      <button class="btn" id="send">Send on WhatsApp</button>
+      <button class="btn" id="send">Send message</button>
     </div>
   </div>
 </div>
@@ -337,8 +394,15 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.8rem
 
 </main>
 <footer><div class="wrap"><span>© 2026 Desk Art Studio. All rights reserved.</span><div class="ic-row" id="fIcons"></div></div></footer>
+<div class="ov" id="ov" hidden></div>
+<div class="sheet neu" id="authS" role="dialog" aria-label="Account" hidden><button class="x neu" data-x aria-label="Close">&times;</button><div class="seg" id="authTabs"><button data-t="login" aria-pressed="true">Log in</button><button data-t="signup" aria-pressed="false">Sign up</button></div><div id="authF"></div></div>
+<div class="sheet neu" id="accS" role="dialog" aria-label="My account" hidden><button class="x neu" data-x aria-label="Close">&times;</button><h3 id="accName"></h3><p class="sm" id="accMail"></p><div class="col"><button class="btn soft" id="accMsg">My messages</button><button class="btn soft" id="accNt">Enable notifications</button><button class="btn soft" id="accSw">Switch account</button><button class="btn" id="accOut">Log out</button></div></div>
+<div class="sheet neu" id="chatS" role="dialog" aria-label="Messages" hidden><button class="x neu" data-x aria-label="Close">&times;</button><h3>Message Desk Art Studio</h3><p class="sm" id="chatWho"></p><div class="msgs inset" id="msgs"></div><div class="cin"><input id="cTxt" placeholder="Type a message" autocomplete="off"><button class="btn" id="cSend">Send</button></div></div>
+<div class="sheet neu" id="bellS" role="dialog" aria-label="Updates" hidden><button class="x neu" data-x aria-label="Close">&times;</button><h3>Updates</h3><div id="annList"></div></div>
+<div class="sheet neu" id="revS" role="dialog" aria-label="Write a review" hidden><button class="x neu" data-x aria-label="Close">&times;</button><h3>Write a review</h3><div class="rvs" id="rvStars"><button data-v="1">&#9733;</button><button data-v="2">&#9733;</button><button data-v="3">&#9733;</button><button data-v="4">&#9733;</button><button data-v="5">&#9733;</button></div><textarea id="rvTxt" placeholder="Tell others about your experience" maxlength="500"></textarea><p class="err" id="rvErr"></p><button class="btn" id="rvGo">Submit review</button></div>
+<div class="toastW" id="toastW" aria-live="polite"></div>
 <div class="tabbar neu" id="tb" role="navigation" aria-label="Quick"></div>
-<a class="fab" href="https://wa.me/8801000000000" aria-label="Chat on WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
+<button class="fab" id="fab" aria-label="Messages"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><b class="bdg" id="fabN" hidden></b></button>
 
 <script>
 const firebaseConfig = {
@@ -420,13 +484,6 @@ var curF='All';function draw(f){curF=f;document.getElementById('allWorks').inner
 draw('All');
 document.querySelectorAll('.chip').forEach(function(c){c.addEventListener('click',function(){
  document.querySelectorAll('.chip').forEach(function(x){x.setAttribute('aria-pressed',x===c)});draw(c.dataset.f);});});
-document.getElementById('send').addEventListener('click',function(){
- var sb=this,nm=document.getElementById('n').value.trim(),ct=document.getElementById('s').value,ms=document.getElementById('m').value.trim();
- if(!nm||!ms){sb.textContent='Please add your name and message';setTimeout(function(){sb.textContent='Send on WhatsApp'},2000);return;}
- var b='Name: '+nm+'\nCategory: '+ct+'\n\n'+ms;
- if(FB&&FS){FS.addDoc(FS.collection(FB,'enquiries'),{name:nm.slice(0,90),category:ct,message:ms.slice(0,1900),createdAt:FS.serverTimestamp(),read:false}).catch(function(){});}
- window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(b),'_blank');
- sb.textContent='Sent, thank you!';setTimeout(function(){sb.textContent='Send on WhatsApp'},2500);});
 var mb=document.getElementById('mb'),nav=document.getElementById('nav');
 mb.addEventListener('click',function(){var o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o);});
 var T={home:'Desk Art Studio | Websites, applications and graphic design',services:'Our Service | Desk Art Studio',works:'Our Works | Desk Art Studio',contact:'Contact | Desk Art Studio',websites:'Websites | Desk Art Studio',applications:'Applications | Desk Art Studio',graphics:'Graphic Design | Desk Art Studio'};
@@ -481,8 +538,100 @@ function refreshAll(){
  document.getElementById('fIcons').innerHTML=icons(true);
  document.querySelectorAll('[data-icons]').forEach(function(e){e.innerHTML=icons(false)});
 }
-if(fbOK){Promise.all([import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")]).then(function(m){
- FS=m[1];FB=FS.getFirestore(m[0].initializeApp(firebaseConfig));
+var ME=null,AU=null,AUTH=null,curS=null,pend=null,aTab='login',chatUnsub=null,chatMsgs=[],chatOpen=false,REV=[],ANN=[],annInit=false,rvN=5;
+function LSg(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
+function LSs(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function escH(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function tms(t){return t&&t.toMillis?t.toMillis():(typeof t==='number'?t:Date.now())}
+function tfmt(t){return new Date(tms(t)).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function $i(id){return document.getElementById(id)}
+function myName(){var u=AUTH&&AUTH.currentUser;return (u&&(u.displayName||String(u.email||'').split('@')[0]))||'Guest'}
+function toast(t,b,fn){var d=document.createElement('div');d.className='toast neu tap';d.innerHTML='<strong>'+escH(t)+'</strong>'+(b?'<span>'+escH(b)+'</span>':'');d.onclick=function(){d.remove();if(fn)fn()};$i('toastW').appendChild(d);setTimeout(function(){d.classList.add('gone');setTimeout(function(){d.remove()},400)},5000);}
+function notify(t,b,fn,tag){if(document.hidden&&window.Notification&&Notification.permission==='granted'&&navigator.serviceWorker){navigator.serviceWorker.ready.then(function(r){r.showNotification(t,{body:b,icon:'site-192.png',badge:'site-192.png',tag:tag||'da',renotify:true})}).catch(function(){})}else toast(t,b,fn);}
+function openS(id){closeS();curS=$i(id);$i('ov').hidden=false;curS.hidden=false;}
+function closeS(){if(curS){if(curS.id==='chatS'){chatOpen=false;if(ME)LSs('da_lr_'+ME.uid,Date.now());drawBadges()}curS.hidden=true;curS=null}$i('ov').hidden=true;}
+$i('ov').addEventListener('click',closeS);
+document.addEventListener('click',function(e){if(e.target.closest('[data-x]'))closeS()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeS()});
+function needLogin(fn){if(!fbOK){toast('Not available','Accounts are not set up yet.');return}if(ME){fn();return}openAuth('login',fn)}
+function emsg(c){return {'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account found with this email.','auth/email-already-in-use':'This email already has an account. Please log in.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Please enter a valid email.','auth/too-many-requests':'Too many tries. Please wait a moment and try again.','auth/network-request-failed':'No internet connection.'}[c]||'Something went wrong. Please try again.'}
+function aerr(m){var e=$i('aErr');if(e)e.textContent=m}
+function openAuth(tab,fn){pend=fn||null;aTab=tab||'login';drawAuth();openS('authS');}
+function drawAuth(){var su=aTab==='signup';
+ document.querySelectorAll('#authTabs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.t===aTab)});
+ $i('authF').innerHTML=(su?'<label for="aN">Full name</label><input id="aN" autocomplete="name">':'')+'<label for="aE">Email</label><input id="aE" type="email" autocomplete="email" inputmode="email">'+(su?'<label for="aP">Phone (optional)</label><input id="aP" type="tel" autocomplete="tel">':'')+'<label for="aW">Password</label><input id="aW" type="password" autocomplete="'+(su?'new':'current')+'-password" placeholder="'+(su?'At least 6 characters':'')+'"><p class="err" id="aErr"></p><button class="btn" id="aGo">'+(su?'Create account':'Log in')+'</button>'+(su?'':'<button class="lnk" id="aFg">Forgot password?</button>');}
+$i('authTabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){aTab=b.dataset.t;drawAuth()}});
+$i('authF').addEventListener('click',function(e){if(e.target.id==='aGo')doAuth();if(e.target.id==='aFg')doReset();});
+$i('authF').addEventListener('keydown',function(e){if(e.key==='Enter')doAuth()});
+function doAuth(){
+ if(!AUTH){aerr('Still loading, please try again in a moment.');return;}
+ var su=aTab==='signup',em=$i('aE').value.trim(),pw=$i('aW').value,nm=su?$i('aN').value.trim():'',btn=$i('aGo');
+ if(su&&!nm){aerr('Please enter your name.');return;}
+ if(!em||!pw){aerr('Please fill in email and password.');return;}
+ btn.disabled=true;aerr('');
+ var p=su?AU.createUserWithEmailAndPassword(AUTH,em,pw).then(function(c){return AU.updateProfile(c.user,{displayName:nm}).then(function(){return FS.setDoc(FS.doc(FB,'users',c.user.uid),{name:nm,email:em,phone:($i('aP').value||'').trim(),createdAt:FS.serverTimestamp(),lastLogin:FS.serverTimestamp()})})}):AU.signInWithEmailAndPassword(AUTH,em,pw);
+ p.then(function(){var f=pend;pend=null;closeS();drawAcct();setTimeout(function(){if(f)f()},300)}).catch(function(e){btn.disabled=false;aerr(emsg(e.code))});}
+function doReset(){var em=$i('aE').value.trim();if(!em){aerr('Enter your email first.');return;}AU.sendPasswordResetEmail(AUTH,em).then(function(){aerr('');toast('Check your email','A password reset link was sent.')}).catch(function(e){aerr(emsg(e.code))});}
+function drawAcct(){var b=$i('acct');if(ME){b.className='btn soft acct av';b.textContent=myName().trim().charAt(0).toUpperCase()||'?'}else{b.className='btn soft acct';b.innerHTML='<span class="l">Login</span><span class="l2"> / Sign up</span>'}
+ $i('cNote').textContent=ME?'Messaging as '+myName()+'.':'Log in or create an account to send a message.';}
+$i('acct').addEventListener('click',function(){if(!fbOK){toast('Not available','Accounts are not set up yet.');return}ME?openAcc():openAuth('login')});
+function drawNt(){var b=$i('accNt');if(!('Notification' in window)){b.hidden=true;return}b.textContent=Notification.permission==='granted'?'Notifications are on':'Enable notifications';}
+function openAcc(){$i('accName').textContent=myName();$i('accMail').textContent=ME.email;drawNt();openS('accS');}
+$i('accNt').addEventListener('click',function(){if(window.Notification)Notification.requestPermission().then(drawNt)});
+$i('accMsg').addEventListener('click',function(){closeS();openChat()});
+$i('accSw').addEventListener('click',function(){AU.signOut(AUTH).then(function(){closeS();openAuth('login')})});
+$i('accOut').addEventListener('click',function(){AU.signOut(AUTH).then(closeS)});
+/* messenger */
+function lastRead(){return +LSg('da_lr_'+(ME&&ME.uid),0)}
+function chatCount(){var lr=lastRead();return chatMsgs.filter(function(m){return m.from==='admin'&&tms(m.createdAt)>lr}).length}
+function drawBadges(){var n=ME?chatCount():0,f=$i('fabN');f.hidden=!n;f.textContent=n}
+function drawMsgs(){var el=$i('msgs');el.innerHTML=chatMsgs.length?chatMsgs.map(function(m){return '<div class="m '+(m.from==='admin'?'a':'u')+'">'+escH(m.text)+'<small>'+tfmt(m.createdAt)+'</small></div>'}).join(''):'<p class="sm">Send us a message. You will get a notification when we reply.</p>';el.scrollTop=el.scrollHeight;}
+function startChat(){stopChat();var first=true;
+ chatUnsub=FS.onSnapshot(FS.query(FS.collection(FB,'chats',ME.uid,'messages'),FS.orderBy('createdAt'),FS.limitToLast(60)),function(s){
+  chatMsgs=s.docs.map(function(d){return d.data({serverTimestamps:'estimate'})});
+  if(!first)s.docChanges().forEach(function(c){if(c.type==='added'){var m=c.doc.data({serverTimestamps:'estimate'});if(m.from==='admin'){if(chatOpen)LSs('da_lr_'+ME.uid,Date.now());else notify('Desk Art Studio',m.text,openChat,'chat')}}});
+  first=false;drawMsgs();drawBadges();},function(){});}
+function stopChat(){if(chatUnsub){chatUnsub();chatUnsub=null}chatMsgs=[];drawBadges();}
+function openChat(){needLogin(function(){chatOpen=true;$i('chatWho').textContent='Signed in as '+myName();openS('chatS');LSs('da_lr_'+ME.uid,Date.now());drawBadges();drawMsgs();setTimeout(function(){$i('cTxt').focus()},350);})}
+function sendMsg(txt,cat){txt=txt.trim();if(!txt)return Promise.resolve();var u=ME.uid,t=(cat?'['+cat+'] ':'')+txt;
+ return FS.addDoc(FS.collection(FB,'chats',u,'messages'),{from:'user',text:t.slice(0,1900),createdAt:FS.serverTimestamp()}).then(function(){return FS.setDoc(FS.doc(FB,'chats',u),{name:myName(),email:ME.email,lastMsg:t.slice(0,80),lastAt:FS.serverTimestamp(),unreadAdmin:true},{merge:true})});}
+function doSend(){var i=$i('cTxt'),v=i.value;if(!v.trim())return;i.value='';sendMsg(v).catch(function(){toast('Not sent','Please check your connection.')});}
+$i('cSend').addEventListener('click',doSend);$i('cTxt').addEventListener('keydown',function(e){if(e.key==='Enter')doSend()});
+$i('fab').addEventListener('click',openChat);
+document.getElementById('send').addEventListener('click',function(){
+ var sb=this,tx=$i('m').value.trim(),ct=$i('s').value;
+ if(!tx){sb.textContent='Please write your message';setTimeout(function(){sb.textContent='Send message'},2000);return;}
+ needLogin(function(){sendMsg(tx,ct).then(function(){$i('m').value='';sb.textContent='Sent, thank you!';setTimeout(function(){sb.textContent='Send message'},2500);openChat()}).catch(function(){toast('Not sent','Please check your connection.')})});});
+/* updates (bell) */
+function annUnread(){var seen=+LSg('da_ann',0);return ANN.filter(function(a){return tms(a.createdAt)>seen}).length}
+function drawBell(){var n=annUnread(),b=$i('bellN');b.hidden=!n;b.textContent=n}
+function openBell(){$i('annList').innerHTML=ANN.length?ANN.map(function(a){return '<div class="an"><strong>'+escH(a.title)+'</strong><p>'+escH(a.body)+'</p><small>'+new Date(tms(a.createdAt)).toLocaleDateString([],{dateStyle:'medium'})+'</small></div>'}).join(''):'<p class="sm">No updates yet. New projects and news will appear here.</p>';openS('bellS');LSs('da_ann',Date.now());drawBell();}
+$i('bell').addEventListener('click',openBell);
+if(!LSg('da_ann',0))LSs('da_ann',Date.now());
+function startAnn(){FS.onSnapshot(FS.query(FS.collection(FB,'announcements'),FS.orderBy('createdAt','desc'),FS.limit(15)),function(s){
+ var seen=+LSg('da_ann',0);ANN=s.docs.map(function(d){var x=d.data({serverTimestamps:'estimate'});x.id=d.id;return x});
+ if(annInit){s.docChanges().forEach(function(c){if(c.type==='added'){var x=c.doc.data({serverTimestamps:'estimate'});if(tms(x.createdAt)>seen)notify(x.title,x.body,openBell,'ann')}})}
+ else if(annUnread())toast('New update',ANN[0].title,openBell);
+ annInit=true;drawBell();},function(){});}
+/* reviews */
+function stars(n){var s='';for(var i=1;i<=5;i++)s+='<i class="'+(i<=n?'on':'')+'">\u2605</i>';return s}
+function drawRev(){var n=REV.length,avg=n?REV.reduce(function(a,r){return a+r.rating},0)/n:0;
+ $i('revTop').innerHTML=n?'<strong class="big">'+avg.toFixed(1)+'</strong><div class="stars">'+stars(Math.round(avg))+'</div><span>'+n+' review'+(n>1?'s':'')+'</span>':'<span>No reviews yet. Be the first to review.</span>';
+ $i('revList').innerHTML=REV.slice(0,6).map(function(r){return '<div class="rv neu"><div class="stars">'+stars(r.rating)+'</div><p>'+escH(r.text)+'</p><small>'+escH(r.name)+'</small></div>'}).join('');}
+function loadRev(){if(!FB)return;FS.getDocs(FS.query(FS.collection(FB,'reviews'),FS.orderBy('createdAt','desc'),FS.limit(30))).then(function(s){REV=s.docs.map(function(d){var x=d.data({serverTimestamps:'estimate'});x.uid=d.id;return x});drawRev()}).catch(function(){})}
+function drawRv(){document.querySelectorAll('#rvStars button').forEach(function(b){b.classList.toggle('on',+b.dataset.v<=rvN)})}
+$i('rvStars').addEventListener('click',function(e){var b=e.target.closest('button');if(b){rvN=+b.dataset.v;drawRv()}});
+$i('revBtn').addEventListener('click',function(){needLogin(function(){var m=REV.filter(function(r){return r.uid===ME.uid})[0];rvN=m?m.rating:5;$i('rvTxt').value=m?m.text:'';$i('rvErr').textContent='';drawRv();openS('revS')})});
+$i('rvGo').addEventListener('click',function(){var t=$i('rvTxt').value.trim();if(!t){$i('rvErr').textContent='Please write a few words.';return}
+ FS.setDoc(FS.doc(FB,'reviews',ME.uid),{name:myName(),rating:rvN,text:t.slice(0,500),createdAt:FS.serverTimestamp()}).then(function(){closeS();toast('Thank you!','Your review is live.');loadRev()}).catch(function(){$i('rvErr').textContent='Could not save. Please try again.'})});
+drawAcct();drawRev();
+/* boot Firebase */
+function bootAuth(){
+ AU.onAuthStateChanged(AUTH,function(u){ME=u?{uid:u.uid,email:u.email}:null;drawAcct();stopChat();
+  if(ME){startChat();FS.setDoc(FS.doc(FB,'users',ME.uid),{lastLogin:FS.serverTimestamp()},{merge:true}).catch(function(){})}loadRev();});
+ startAnn();}
+if(fbOK){Promise.all([import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js")]).then(function(m){
+ FS=m[1];AU=m[2];var app=m[0].initializeApp(firebaseConfig);FB=FS.getFirestore(app);AUTH=AU.getAuth(app);bootAuth();
  return Promise.race([Promise.all([FS.getDoc(FS.doc(FB,'site','main')),FS.getDocs(FS.query(FS.collection(FB,'works'),FS.orderBy('order')))]),new Promise(function(_,r){setTimeout(r,12000)})]);
 }).then(function(r){
  var st=r[0].exists()?r[0].data():{},w=r[1].docs.map(function(d){return d.data()}).filter(function(x){return x.visible!==false});
